@@ -1,24 +1,20 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { arrayMove } from '@dnd-kit/sortable';
-import { loadTasks, saveTasks } from '../utils/storage';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { db } from '../utils/firebase';
+import { collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc, writeBatch } from 'firebase/firestore';
 
-const ARCHIVE_DELAY_MS = 24 * 60 * 60 * 1000; // 24 hours
-const ARCHIVE_CHECK_INTERVAL_MS = 60 * 1000;   // 1 minute
 const COLUMN_IDS = ['todo', 'inprogress', 'done'];
 
+// Helper: build path for the user's tasks
+const getTasksRef = (userId) => collection(db, 'users', userId, 'tasks');
+
 // Helper: reassign clean order values (0, 1, 2, ...) to tasks in a column
-function reassignOrders(tasks, status) {
+// Returns the updated task objects with new orders
+function getCleanOrderedTasks(tasks, status) {
   const sorted = tasks
-    .filter(t => t.status === status && !t.archived)
+    .filter(t => t.status === status)
     .sort((a, b) => a.order - b.order);
-  const orderMap = new Map();
-  sorted.forEach((t, i) => orderMap.set(t.id, i));
-  return tasks.map(t => {
-    if (orderMap.has(t.id)) {
-      return { ...t, order: orderMap.get(t.id) };
-    }
-    return t;
-  });
+    
+  return sorted.map((t, i) => ({ ...t, order: i }));
 }
 
 // Helper: find which column a task or droppable belongs to
@@ -28,232 +24,242 @@ function findColumn(taskId, tasks) {
   return task ? task.status : null;
 }
 
-export function useTaskManager() {
-  const [tasks, setTasks] = useState(() => loadTasks());
+export function useTaskManager(user) {
+  const [tasks, setTasks] = useState([]);
+  const serverTasksRef = useRef([]);
   const [filter, setFilter] = useState('all');
-  const [currentPage, setCurrentPage] = useState('board');
   const [modalState, setModalState] = useState({ isOpen: false, mode: 'create', task: null });
+  const [isReady, setIsReady] = useState(false);
 
-  // Persist tasks to localStorage whenever they change
+  // Sync with Firestore
   useEffect(() => {
-    saveTasks(tasks);
-  }, [tasks]);
+    if (!user) {
+      setTasks([]);
+      serverTasksRef.current = [];
+      setIsReady(false);
+      return;
+    }
 
-  // Auto-archive: check every minute for tasks completed > 24h ago
-  useEffect(() => {
-    const checkArchive = () => {
-      const now = Date.now();
-      setTasks(prev => {
-        const updated = prev.map(task => {
-          if (
-            task.status === 'done' &&
-            !task.archived &&
-            task.completedAt &&
-            now - task.completedAt >= ARCHIVE_DELAY_MS
-          ) {
-            return { ...task, archived: true };
-          }
-          return task;
-        });
-        const hasChanged = updated.some((t, i) => t !== prev[i]);
-        return hasChanged ? updated : prev;
-      });
-    };
+    const unsubscribe = onSnapshot(getTasksRef(user.uid), (snapshot) => {
+      const fetchedTasks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setTasks(fetchedTasks);
+      serverTasksRef.current = fetchedTasks;
+      setIsReady(true);
+    }, (error) => {
+      console.error("Firestore Error:", error);
+    });
 
-    checkArchive();
-    const interval = setInterval(checkArchive, ARCHIVE_CHECK_INTERVAL_MS);
-    return () => clearInterval(interval);
-  }, []);
+    return () => unsubscribe();
+  }, [user]);
 
   // --- CRUD ---
-  const addTask = useCallback((taskData) => {
+  const addTask = useCallback(async (taskData) => {
+    if (!user) return;
+    const newId = crypto.randomUUID();
     const newTask = {
-      id: crypto.randomUUID(),
       title: taskData.title,
       priority: taskData.priority,
       timeLabel: taskData.timeLabel,
       status: 'todo',
-      order: Date.now(),
+      order: Date.now(), // temporary order to be last
       createdAt: Date.now(),
       completedAt: null,
-      archived: false,
     };
-    setTasks(prev => {
-      const updated = [...prev, newTask];
-      return reassignOrders(updated, 'todo');
-    });
-  }, []);
+    
+    // Using setDoc with generated ID allows us to use it immediately if needed
+    try {
+      await setDoc(doc(db, 'users', user.uid, 'tasks', newId), newTask);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
+  }, [user]);
 
-  const updateTask = useCallback((id, updates) => {
-    setTasks(prev => prev.map(task => {
-      if (task.id !== id) return task;
-      const updated = { ...task, ...updates };
-      if (updates.status === 'done' && task.status !== 'done') {
-        updated.completedAt = Date.now();
-      }
-      if (updates.status && updates.status !== 'done' && task.status === 'done') {
-        updated.completedAt = null;
-        updated.archived = false;
-      }
-      return updated;
-    }));
-  }, []);
+  const updateTask = useCallback(async (id, updates) => {
+    if (!user) return;
+    const task = tasks.find(t => t.id === id);
+    if (!task) return;
 
-  const deleteTask = useCallback((id) => {
-    setTasks(prev => prev.filter(task => task.id !== id));
-  }, []);
+    const updatedData = { ...updates };
+    if (updates.status === 'done' && task.status !== 'done') {
+      updatedData.completedAt = Date.now();
+    }
+    if (updates.status && updates.status !== 'done' && task.status === 'done') {
+      updatedData.completedAt = null;
+    }
 
-  const restoreTask = useCallback((id) => {
-    setTasks(prev => {
-      const updated = prev.map(task => {
-        if (task.id !== id) return task;
-        return { ...task, status: 'todo', completedAt: null, archived: false, order: Date.now() };
-      });
-      return reassignOrders(updated, 'todo');
-    });
-  }, []);
+    try {
+      await updateDoc(doc(db, 'users', user.uid, 'tasks', id), updatedData);
+    } catch (error) {
+      console.error("Error updating document:", error);
+    }
+  }, [user, tasks]);
+
+  const deleteTask = useCallback(async (id) => {
+    if (!user) return;
+    try {
+      await deleteDoc(doc(db, 'users', user.uid, 'tasks', id));
+    } catch (error) {
+      console.error("Error deleting document:", error);
+    }
+  }, [user]);
 
   // --- D&D: onDragOver (cross-column real-time move) ---
   const handleDragOver = useCallback((event) => {
-    const { active, over } = event;
-    if (!over) return;
-
-    setTasks(prev => {
-      const activeId = active.id;
-      const overId = over.id;
-
-      const activeColumn = findColumn(activeId, prev);
-      const overColumn = findColumn(overId, prev);
-
-      if (!activeColumn || !overColumn || activeColumn === overColumn) return prev;
-
-      // Cross-column move: move active task to the target column
-      const activeTask = prev.find(t => t.id === activeId);
-      if (!activeTask) return prev;
-
-      // Get sorted tasks in the target column
-      const overColumnTasks = prev
-        .filter(t => t.status === overColumn && !t.archived && t.id !== activeId)
-        .sort((a, b) => a.order - b.order);
-
-      // Find insertion index
-      let newIndex;
-      const overTask = prev.find(t => t.id === overId);
-      if (overTask) {
-        newIndex = overColumnTasks.findIndex(t => t.id === overId);
-        if (newIndex === -1) newIndex = overColumnTasks.length;
-      } else {
-        // Dropped on a column itself
-        newIndex = overColumnTasks.length;
-      }
-
-      // Update the task's status
-      let updated = prev.map(t => {
-        if (t.id !== activeId) return t;
-        const movedTask = { ...t, status: overColumn, order: newIndex - 0.5 };
-        if (overColumn === 'done' && t.status !== 'done') {
-          movedTask.completedAt = Date.now();
-        }
-        if (overColumn !== 'done' && t.status === 'done') {
-          movedTask.completedAt = null;
-          movedTask.archived = false;
-        }
-        return movedTask;
-      });
-
-      // Reassign clean orders in both columns
-      updated = reassignOrders(updated, activeColumn);
-      updated = reassignOrders(updated, overColumn);
-      return updated;
-    });
-  }, []);
-
-  // --- D&D: onDragEnd (within-column reorder + finalize) ---
-  const handleDragEnd = useCallback((event) => {
+    // In a fully synchronous cloud app, doing DB writes on every hover (DragOver) is too expensive.
+    // Therefore, we only perform optimistic UI updates during drag over, or wait for DragEnd.
+    // Dnd-kit sortable usually needs state updates to show animations.
+    
     const { active, over } = event;
     if (!over) return;
 
     const activeId = active.id;
     const overId = over.id;
-    if (activeId === overId) return;
 
+    const activeColumn = findColumn(activeId, tasks);
+    const overColumn = findColumn(overId, tasks);
+
+    if (!activeColumn || !overColumn || activeColumn === overColumn) return;
+
+    // Cross-column move: Just update local state for UI responsiveness.
+    // Real save will happen in onDragEnd.
     setTasks(prev => {
-      const activeColumn = findColumn(activeId, prev);
-      const overColumn = findColumn(overId, prev);
+      const activeTask = prev.find(t => t.id === activeId);
+      if (!activeTask) return prev;
 
-      if (!activeColumn || !overColumn) return prev;
-
-      // Same column: reorder using arrayMove
-      if (activeColumn === overColumn) {
-        const columnTasks = prev
-          .filter(t => t.status === activeColumn && !t.archived)
-          .sort((a, b) => a.order - b.order);
-
-        const oldIndex = columnTasks.findIndex(t => t.id === activeId);
-        const newIndex = columnTasks.findIndex(t => t.id === overId);
-
-        if (oldIndex === -1 || newIndex === -1) return prev;
-
-        const reordered = arrayMove(columnTasks, oldIndex, newIndex);
-        const orderMap = new Map();
-        reordered.forEach((t, i) => orderMap.set(t.id, i));
-
-        return prev.map(t => {
-          if (orderMap.has(t.id)) {
-            return { ...t, order: orderMap.get(t.id) };
-          }
-          return t;
-        });
-      }
-
-      // Cross-column: task was already moved in onDragOver,
-      // so we just need to finalize position based on where it was dropped
-      const overTask = prev.find(t => t.id === overId);
-      const columnTasks = prev
-        .filter(t => t.status === overColumn && !t.archived)
+      const overColumnTasks = prev
+        .filter(t => t.status === overColumn && t.id !== activeId)
         .sort((a, b) => a.order - b.order);
 
-      const activeIndex = columnTasks.findIndex(t => t.id === activeId);
+      let newIndex = overColumnTasks.findIndex(t => t.id === overId);
+      if (newIndex === -1) newIndex = overColumnTasks.length;
 
-      if (overTask) {
-        const overIndex = columnTasks.findIndex(t => t.id === overId);
-        if (activeIndex !== -1 && overIndex !== -1 && activeIndex !== overIndex) {
-          const reordered = arrayMove(columnTasks, activeIndex, overIndex);
-          const orderMap = new Map();
-          reordered.forEach((t, i) => orderMap.set(t.id, i));
-          return prev.map(t => {
-            if (orderMap.has(t.id)) {
-              return { ...t, order: orderMap.get(t.id) };
-            }
-            return t;
-          });
+      return prev.map(t => {
+        if (t.id === activeId) {
+          return { ...t, status: overColumn, order: newIndex - 0.5 };
+        }
+        return t;
+      });
+    });
+  }, [tasks]);
+
+  // --- D&D: onDragEnd (within-column reorder + finalize) ---
+  const handleDragEnd = useCallback(async (event) => {
+    if (!user) return;
+    const { active, over } = event;
+    if (!over) return;
+
+    const activeId = active.id;
+    const overId = over.id;
+    
+    // Get true original status from server state before eager UI updates
+    const serverTask = serverTasksRef.current.find(t => t.id === activeId);
+    const activeColumn = serverTask ? serverTask.status : findColumn(activeId, tasks);
+    const overColumn = findColumn(overId, tasks);
+    if (!activeColumn || !overColumn) return;
+
+    // Since onDragOver might have modified the local state, tasks array already has 
+    // the item in the new column. We just need to fix ordering and persist.
+    
+    // We create a fresh copy of tasks to manipulate securely before batching
+    let updatedTasks = [...tasks];
+    const taskToMove = updatedTasks.find(t => t.id === activeId);
+    
+    if (!taskToMove) return;
+
+    let targetColumnTasks;
+
+    if (activeColumn === overColumn) {
+      // 同一カラム内の並び替え: arrayMove パターン
+      let columnTasks = updatedTasks
+        .filter(t => t.status === overColumn)
+        .sort((a, b) => a.order - b.order);
+
+      const oldIndex = columnTasks.findIndex(t => t.id === activeId);
+      const newIndex = columnTasks.findIndex(t => t.id === overId);
+
+      if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return;
+
+      // arrayMove: 元の位置から削除して新しい位置に挿入
+      const [moved] = columnTasks.splice(oldIndex, 1);
+      columnTasks.splice(newIndex, 0, moved);
+
+      targetColumnTasks = columnTasks;
+    } else {
+      // クロスカラム移動
+      targetColumnTasks = updatedTasks
+        .filter(t => t.status === overColumn && t.id !== activeId)
+        .sort((a, b) => a.order - b.order);
+
+      let dropIndex = targetColumnTasks.findIndex(t => t.id === overId);
+      if (dropIndex === -1) dropIndex = targetColumnTasks.length;
+      targetColumnTasks.splice(dropIndex, 0, taskToMove);
+    }
+
+    // Now targetColumnTasks has the new exact ordering.
+    // Create a batch to rewrite orders of this column.
+    const batch = writeBatch(db);
+    let orderChangedCount = 0;
+
+    targetColumnTasks.forEach((t, index) => {
+      // Reassign only if order is different, or if it changed status/completed state
+      const isMovedTask = t.id === activeId;
+      
+      let updates = {};
+      if (t.order !== index) updates.order = index;
+      
+      if (isMovedTask) {
+        // If moving cross-column, enforce the new status update since t.status was eagerly changed
+        if (activeColumn !== overColumn) {
+          updates.status = overColumn;
+          if (overColumn === 'done') {
+            updates.completedAt = Date.now();
+          } else {
+            updates.completedAt = null;
+          }
         }
       }
 
-      // Final cleanup: reassign orders
-      let updated = reassignOrders(prev, activeColumn);
-      updated = reassignOrders(updated, overColumn);
-      return updated;
+      if (Object.keys(updates).length > 0) {
+        const ref = doc(db, 'users', user.uid, 'tasks', t.id);
+        batch.update(ref, updates);
+        orderChangedCount++;
+      }
     });
-  }, []);
+
+    if (activeColumn !== overColumn) {
+      // If it changed columns, also clean up the source column orders
+      const sourceColumnTasks = updatedTasks
+        .filter(t => t.status === activeColumn && t.id !== activeId)
+        .sort((a, b) => a.order - b.order);
+        
+      sourceColumnTasks.forEach((t, index) => {
+        if (t.order !== index) {
+          const ref = doc(db, 'users', user.uid, 'tasks', t.id);
+          batch.update(ref, { order: index });
+          orderChangedCount++;
+        }
+      });
+    }
+
+    if (orderChangedCount > 0) {
+      try {
+        await batch.commit();
+      } catch (error) {
+        console.error("Error committing batch:", error);
+      }
+    }
+  }, [tasks, user]);
 
   // --- Filtering ---
   const getFilteredTasks = useCallback((status) => {
     return tasks
       .filter(t => {
-        if (t.archived) return false;
         if (t.status !== status) return false;
         if (filter === 'all') return true;
         return t.timeLabel === filter;
       })
       .sort((a, b) => a.order - b.order);
   }, [tasks, filter]);
-
-  const archivedTasks = useMemo(() => {
-    return tasks
-      .filter(t => t.archived)
-      .sort((a, b) => (b.completedAt || 0) - (a.completedAt || 0));
-  }, [tasks]);
 
   // --- Modal helpers ---
   const openCreateModal = useCallback(() => {
@@ -271,7 +277,6 @@ export function useTaskManager() {
   // --- Task counts ---
   const getTaskCount = useCallback((status) => {
     return tasks.filter(t => {
-      if (t.archived) return false;
       if (t.status !== status) return false;
       if (filter === 'all') return true;
       return t.timeLabel === filter;
@@ -282,20 +287,17 @@ export function useTaskManager() {
     tasks,
     filter,
     setFilter,
-    currentPage,
-    setCurrentPage,
     modalState,
     addTask,
     updateTask,
     deleteTask,
-    restoreTask,
     handleDragOver,
     handleDragEnd,
     getFilteredTasks,
-    archivedTasks,
     openCreateModal,
     openEditModal,
     closeModal,
     getTaskCount,
+    isReady,
   };
 }
