@@ -33,14 +33,15 @@
 }
 
 .filter-bar__btn--active {
-  border-color: var(--accent-primary);
-  background: rgba(124, 124, 240, 0.15);
-  color: var(--accent-primary);
+  background: var(--accent-gradient);
+  border-color: transparent;
+  color: #fff;
 }
 
 .filter-bar__btn--active:hover {
-  background: rgba(124, 124, 240, 0.2);
-  border-color: var(--accent-primary-hover);
+  background: var(--accent-gradient);
+  border-color: transparent;
+  opacity: 0.9;
 }
 
 @media (max-width: 600px) {

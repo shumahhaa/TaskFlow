@@ -6,7 +6,7 @@ import './Column.css';
 const COLUMN_CONFIG = {
   todo: { label: '未着手' },
   inprogress: { label: '進行中' },
-  done: { label: '完了' },
+  done: { label: '完了', description: '24時間後に消去' },
 };
 
 const Column = ({ status, tasks, onEditTask, taskCount, onStatusChange }) => {
@@ -23,6 +23,7 @@ const Column = ({ status, tasks, onEditTask, taskCount, onStatusChange }) => {
         <div className="column__title">
           <span className={`column__status-dot column__status-dot--${status}`} />
           <span>{config.label}</span>
+          {config.description && <span className="column__description">{config.description}</span>}
         </div>
         <span className="column__count">{taskCount}</span>
       </div>

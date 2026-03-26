@@ -11,12 +11,12 @@
   position: fixed;
   bottom: var(--space-xl);
   right: var(--space-xl);
-  width: 72px;
-  height: 72px;
+  width: 85px;
+  height: 85px;
   border-radius: 50%;
   background: var(--accent-gradient);
   color: #fff;
-  font-size: 2.25rem;
+  font-size: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -44,8 +44,8 @@
   .kanban-board__add-btn {
     bottom: var(--space-md);
     right: var(--space-md);
-    width: 64px;
-    height: 64px;
-    font-size: 1.8rem;
+    width: 72px;
+    height: 72px;
+    font-size: 2.5rem;
   }
 }

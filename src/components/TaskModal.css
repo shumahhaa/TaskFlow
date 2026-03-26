@@ -166,7 +166,7 @@
   border-radius: var(--radius-md);
   background: var(--bg-tertiary);
   border: 1px solid var(--border-subtle);
-  color: var(--text-secondary);
+  color: #ffffff;
   transition: all var(--transition-fast);
   cursor: pointer;
   text-align: center;
@@ -181,21 +181,21 @@
 .modal__status-btn--active.modal__status-btn--todo {
   background: rgba(124, 124, 240, 0.15);
   border-color: var(--status-todo);
-  color: var(--status-todo);
+  color: #ffffff;
   box-shadow: 0 0 8px rgba(124, 124, 240, 0.2);
 }
 
 .modal__status-btn--active.modal__status-btn--inprogress {
   background: rgba(77, 201, 246, 0.15);
   border-color: var(--status-inprogress);
-  color: var(--status-inprogress);
+  color: #ffffff;
   box-shadow: 0 0 8px rgba(77, 201, 246, 0.2);
 }
 
 .modal__status-btn--active.modal__status-btn--done {
   background: rgba(77, 255, 145, 0.15);
   border-color: var(--status-done);
-  color: var(--status-done);
+  color: #ffffff;
   box-shadow: 0 0 8px rgba(77, 255, 145, 0.2);
 }
 

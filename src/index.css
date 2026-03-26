@@ -101,12 +101,12 @@ html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--bg-primary);
+  background-color: #0f0f1a; /* Explicit hex for mobile safe area color detection */
 }
 
 body {
   font-family: var(--font-family);
-  background: var(--bg-primary);
+  background-color: #0f0f1a; /* Explicit hex for mobile safe area color detection */
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;

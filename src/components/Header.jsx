@@ -28,14 +28,9 @@ const Header = ({ user }) => {
             />
           </div>
           <button 
+            className="header__logout-btn"
             onClick={handleLogout}
-            style={{
-              padding: '6px 12px', fontSize: '0.85rem', backgroundColor: '#f1f5f9',
-              color: '#334155', border: '1px solid #cbd5e1', borderRadius: '6px',
-              cursor: 'pointer', transition: 'all 0.2s', fontWeight: 'bold'
-            }}
-            onMouseOver={(e) => { e.currentTarget.style.backgroundColor = '#e2e8f0'; }}
-            onMouseOut={(e) => { e.currentTarget.style.backgroundColor = '#f1f5f9'; }}
+            title="ログアウト"
           >
             ログアウト
           </button>

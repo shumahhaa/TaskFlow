@@ -7,9 +7,6 @@
   background: var(--bg-glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  position: sticky;
-  top: 0;
-  z-index: 100;
 }
 
 .header__title {
@@ -49,6 +46,22 @@
 .header__nav-btn--active:hover {
   background: var(--accent-primary-hover);
   color: #fff;
+}
+
+.header__logout-btn {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
 @media (max-width: 600px) {
