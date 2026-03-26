@@ -87,17 +87,17 @@ function App() {
 
   if (loadingAuth) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#f1f5f9' }}>
-        <div style={{ fontSize: '1.2rem', color: '#64748b' }}>読み込み中...</div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: 'var(--bg-primary)' }}>
+        <div style={{ fontSize: '1.2rem', color: 'var(--text-secondary)' }}>読み込み中...</div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', backgroundColor: '#f8fafc', padding: '20px' }}>
-        <h1 style={{ fontSize: '3rem', color: '#0f172a', margin: '0 0 16px 0', letterSpacing: '-1px' }}>TaskFlow</h1>
-        <p style={{ color: '#64748b', fontSize: '1.1rem', marginBottom: '40px', textAlign: 'center', lineHeight: '1.6' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', backgroundColor: 'var(--bg-primary)', padding: '20px' }}>
+        <h1 style={{ fontSize: '3rem', color: 'var(--text-primary)', margin: '0 0 16px 0', letterSpacing: '-1px' }}>TaskFlow</h1>
+        <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '40px', textAlign: 'center', lineHeight: '1.6' }}>
           クラウド保存に対応しました。<br />
           Googleアカウントでログインして、スマホとPCでタスクを安全に同期しましょう。
         </p>
@@ -106,13 +106,13 @@ function App() {
           style={{ 
             display: 'flex', alignItems: 'center', gap: '10px',
             padding: '14px 28px', fontSize: '1.1rem', fontWeight: 'bold',
-            backgroundColor: '#ffffff', color: '#334155', 
-            border: '1px solid #e2e8f0', borderRadius: '12px', 
-            cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05)',
+            backgroundColor: 'var(--bg-tertiary)', color: 'var(--text-primary)', 
+            border: '1px solid var(--border-light)', borderRadius: '12px', 
+            cursor: 'pointer', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.2), 0 2px 4px -2px rgba(0,0,0,0.1)',
             transition: 'all 0.2s ease'
           }}
-          onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)'; }}
-          onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -2px rgba(0,0,0,0.05)'; }}
+          onMouseOver={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(0,0,0,0.3), 0 4px 6px -4px rgba(0,0,0,0.2)'; e.currentTarget.style.borderColor = 'var(--accent-primary)'; }}
+          onMouseOut={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0,0,0,0.2), 0 2px 4px -2px rgba(0,0,0,0.1)'; e.currentTarget.style.borderColor = 'var(--border-light)'; }}
         >
           <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
