@@ -16,7 +16,14 @@ const PRIORITY_LABEL_MAP = {
   low: '低',
 };
 
-const TaskCard = ({ task, onEdit }) => {
+const STATUS_ORDER = ['todo', 'inprogress', 'done'];
+const STATUS_LABEL = {
+  todo: '未着手',
+  inprogress: '進行中',
+  done: '完了',
+};
+
+const TaskCard = ({ task, onEdit, onStatusChange }) => {
   const {
     attributes,
     listeners,
@@ -44,19 +51,39 @@ const TaskCard = ({ task, onEdit }) => {
       style={style}
       {...attributes}
       {...listeners}
-      className={`task-card ${isDragging ? 'task-card--dragging' : ''}`}
+      className={`task-card task-card--priority-${task.priority} ${isDragging ? 'task-card--dragging' : ''}`}
       onClick={handleClick}
       id={`task-${task.id}`}
     >
-      <div className={`task-card__priority-indicator task-card__priority-indicator--${task.priority}`} />
-      <div className="task-card__title">{task.title}</div>
-      <div className="task-card__meta">
-        <span className={`badge badge--${task.priority}`}>
-          {PRIORITY_LABEL_MAP[task.priority]}
-        </span>
-        <span className={`task-card__time-label task-card__time-label--${task.timeLabel}`}>
-          {TIME_LABEL_MAP[task.timeLabel]}
-        </span>
+      <div className="task-card__title" title={task.title}>{task.title}</div>
+      <div className="task-card__footer">
+        <div className="task-card__meta">
+          <span className={`badge badge--${task.priority}`}>
+            {PRIORITY_LABEL_MAP[task.priority]}
+          </span>
+          <span className={`task-card__time-tag task-card__time-tag--${task.timeLabel}`}>
+            {TIME_LABEL_MAP[task.timeLabel]}
+          </span>
+        </div>
+        
+        {onStatusChange && (
+          <div className="task-card__quick-actions">
+            {STATUS_ORDER.filter(s => s !== task.status).map((targetStatus) => (
+              <button
+                key={targetStatus}
+                className={`task-card__action-btn task-card__action-btn--to-${targetStatus}`}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onStatusChange(task.id, targetStatus);
+                }}
+                aria-label={`${STATUS_LABEL[targetStatus]}へ移動`}
+                title={`${STATUS_LABEL[targetStatus]}へ移動`}
+              >
+                {STATUS_LABEL[targetStatus]}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

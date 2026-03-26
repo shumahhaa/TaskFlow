@@ -33,6 +33,10 @@ function MainApp({ user }) {
     }
   };
 
+  const handleStatusChange = (taskId, newStatus) => {
+    updateTask(taskId, { status: newStatus });
+  };
+
   return (
     <>
       <Header user={user} />
@@ -46,6 +50,7 @@ function MainApp({ user }) {
         onDragEnd={handleDragEnd}
         onEditTask={openEditModal}
         onAddTask={openCreateModal}
+        onStatusChange={handleStatusChange}
       />
 
       <TaskModal

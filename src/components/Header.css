@@ -53,11 +53,11 @@
 
 @media (max-width: 600px) {
   .header {
-    padding: var(--space-sm) var(--space-md);
+    padding: 15px var(--space-md);
   }
 
   .header__title {
-    font-size: 1.05rem;
+    font-size: 1.3rem;
   }
 
   .header__nav-btn {

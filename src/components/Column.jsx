@@ -4,12 +4,12 @@ import TaskCard from './TaskCard';
 import './Column.css';
 
 const COLUMN_CONFIG = {
-  todo: { label: '未着手', emoji: '📋' },
-  inprogress: { label: '進行中', emoji: '🔄' },
-  done: { label: '完了', emoji: '✅' },
+  todo: { label: '未着手' },
+  inprogress: { label: '進行中' },
+  done: { label: '完了' },
 };
 
-const Column = ({ status, tasks, onEditTask, taskCount }) => {
+const Column = ({ status, tasks, onEditTask, taskCount, onStatusChange }) => {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   const config = COLUMN_CONFIG[status];
   const taskIds = tasks.map(t => t.id);
@@ -22,7 +22,7 @@ const Column = ({ status, tasks, onEditTask, taskCount }) => {
       <div className="column__header">
         <div className="column__title">
           <span className={`column__status-dot column__status-dot--${status}`} />
-          <span>{config.emoji} {config.label}</span>
+          <span>{config.label}</span>
         </div>
         <span className="column__count">{taskCount}</span>
       </div>
@@ -32,7 +32,7 @@ const Column = ({ status, tasks, onEditTask, taskCount }) => {
             <div className="column__empty">タスクをここにドロップ</div>
           ) : (
             tasks.map(task => (
-              <TaskCard key={task.id} task={task} onEdit={onEditTask} />
+              <TaskCard key={task.id} task={task} onEdit={onEditTask} onStatusChange={onStatusChange} />
             ))
           )}
         </div>

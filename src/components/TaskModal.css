@@ -109,6 +109,7 @@
   font-weight: 600;
   font-size: 0.85rem;
   transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
 .modal__btn--primary {
@@ -149,11 +150,81 @@
   transform: translateY(-1px);
 }
 
+/* Status toggle group */
+.modal__status-group {
+  display: flex;
+  gap: var(--space-xs);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.modal__status-btn {
+  flex: 1;
+  padding: var(--space-sm) var(--space-xs);
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.modal__status-btn:hover {
+  background: var(--bg-card-hover);
+  border-color: var(--border-light);
+}
+
+.modal__status-btn--active.modal__status-btn--todo {
+  background: rgba(124, 124, 240, 0.15);
+  border-color: var(--status-todo);
+  color: var(--status-todo);
+  box-shadow: 0 0 8px rgba(124, 124, 240, 0.2);
+}
+
+.modal__status-btn--active.modal__status-btn--inprogress {
+  background: rgba(77, 201, 246, 0.15);
+  border-color: var(--status-inprogress);
+  color: var(--status-inprogress);
+  box-shadow: 0 0 8px rgba(77, 201, 246, 0.2);
+}
+
+.modal__status-btn--active.modal__status-btn--done {
+  background: rgba(77, 255, 145, 0.15);
+  border-color: var(--status-done);
+  color: var(--status-done);
+  box-shadow: 0 0 8px rgba(77, 255, 145, 0.2);
+}
+
 @media (max-width: 600px) {
   .modal {
     padding: var(--space-lg);
     max-width: 100%;
     margin: var(--space-md);
     border-radius: var(--radius-lg);
+  }
+
+  .modal__status-btn {
+    padding: 10px var(--space-xs);
+    font-size: 0.75rem;
+  }
+
+  .modal__actions {
+    gap: var(--space-xs);
+  }
+
+  .modal__btn {
+    padding: var(--space-sm) var(--space-xs);
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .modal__actions {
+    flex-direction: column;
+    gap: var(--space-xs);
   }
 }

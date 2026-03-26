@@ -1,110 +1,136 @@
 .task-card {
   position: relative;
-  padding: var(--space-md);
+  padding: 12px 14px;
   border-radius: var(--radius-md);
-  background: var(--bg-glass);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: var(--bg-card);
+  backdrop-filter: blur(12px) saturate(160%);
+  -webkit-backdrop-filter: blur(12px) saturate(160%);
   border: 1px solid var(--border-subtle);
   cursor: grab;
-  transition: all var(--transition-fast);
-  animation: slideUp 0.3s ease;
+  transition: all var(--transition-normal);
+  animation: slideUp 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   touch-action: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
 }
 
 .task-card:hover {
   background: var(--bg-card-hover);
   border-color: var(--border-light);
-  box-shadow: var(--shadow-sm);
-  transform: translateY(-1px);
-}
-
-.task-card:active {
-  cursor: grabbing;
 }
 
 .task-card--dragging {
-  opacity: 0.5;
+  opacity: 0.6;
+  scale: 1.02;
   box-shadow: var(--shadow-lg);
-  z-index: 999;
+  z-index: 1000;
+  border-color: var(--accent-primary);
 }
+
+
 
 .task-card__title {
   font-size: 0.9rem;
   font-weight: 500;
-  margin-bottom: var(--space-sm);
+  color: var(--text-primary);
   line-height: 1.4;
-  word-break: break-word;
+  margin: 2px 0 0 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.task-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+  min-height: 28px;
 }
 
 .task-card__meta {
   display: flex;
   align-items: center;
-  gap: var(--space-sm);
-  flex-wrap: wrap;
+  gap: var(--space-xs);
 }
 
-.task-card__time-label {
-  display: inline-flex;
+.task-card__time-tag {
+  display: flex;
   align-items: center;
-  padding: 2px 8px;
-  border-radius: var(--radius-full);
-  font-size: 0.7rem;
+  gap: 4px;
+  font-size: 0.65rem;
   font-weight: 600;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 2px 6px;
+  border-radius: var(--radius-full);
 }
 
-.task-card__time-label--today {
-  background: var(--time-today-bg);
-  color: var(--time-today);
+.task-card__time-tag--today { background: var(--time-today-bg); }
+.task-card__time-tag--tomorrow { background: var(--time-tomorrow-bg); }
+.task-card__time-tag--thisweek { background: var(--time-thisweek-bg); }
+.task-card__time-tag--nextweek { background: var(--time-nextweek-bg); }
+
+/* Quick Actions */
+.task-card__quick-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  transform: translateX(4px);
+  transition: all var(--transition-normal);
 }
 
-.task-card__time-label--tomorrow {
-  background: var(--time-tomorrow-bg);
-  color: var(--time-tomorrow);
+.task-card:hover .task-card__quick-actions {
+  opacity: 1;
+  transform: translateX(0);
 }
 
-.task-card__time-label--thisweek {
-  background: var(--time-thisweek-bg);
-  color: var(--time-thisweek);
+.task-card__action-btn {
+  padding: 4px 8px;
+  border-radius: var(--radius-sm, 4px);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
 }
 
-.task-card__time-label--nextweek {
-  background: var(--time-nextweek-bg);
-  color: var(--time-nextweek);
-}
 
-.task-card__time-label--none {
-  background: var(--time-none-bg);
-  color: var(--time-none);
-}
-
-.task-card__priority-indicator {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3px;
-  height: 100%;
-  border-radius: var(--radius-md) 0 0 var(--radius-md);
-}
-
-.task-card__priority-indicator--high {
-  background: var(--priority-high);
-}
-
-.task-card__priority-indicator--medium {
-  background: var(--priority-medium);
-}
-
-.task-card__priority-indicator--low {
-  background: var(--priority-low);
+@media (max-width: 900px) {
+  .task-card {
+    touch-action: auto !important;
+    cursor: default;
+  }
+  
+  .task-card__quick-actions {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 @media (max-width: 600px) {
   .task-card {
-    padding: var(--space-sm) var(--space-md);
+    padding: 10px 12px;
   }
 
   .task-card__title {
     font-size: 0.85rem;
+  }
+  
+  .task-card__action-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
   }
 }

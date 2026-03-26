@@ -5,16 +5,19 @@ const TaskModal = ({ isOpen, mode, task, onClose, onSave, onDelete }) => {
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState('medium');
   const [timeLabel, setTimeLabel] = useState('today');
+  const [status, setStatus] = useState('todo');
 
   useEffect(() => {
     if (mode === 'edit' && task) {
       setTitle(task.title);
       setPriority(task.priority);
       setTimeLabel(task.timeLabel);
+      setStatus(task.status || 'todo');
     } else {
       setTitle('');
       setPriority('medium');
       setTimeLabel('today');
+      setStatus('todo');
     }
   }, [mode, task, isOpen]);
 
@@ -24,11 +27,15 @@ const TaskModal = ({ isOpen, mode, task, onClose, onSave, onDelete }) => {
     e.preventDefault();
     if (!title.trim()) return;
 
-    onSave({
+    const saveData = {
       title: title.trim(),
       priority,
       timeLabel,
-    });
+    };
+    if (mode === 'edit') {
+      saveData.status = status;
+    }
+    onSave(saveData);
     onClose();
   };
 
@@ -52,7 +59,7 @@ const TaskModal = ({ isOpen, mode, task, onClose, onSave, onDelete }) => {
           ✕
         </button>
         <h2 className="modal__title">
-          {mode === 'create' ? '✨ 新規タスク' : '✏️ タスクを編集'}
+          {mode === 'create' ? '新規タスク' : 'タスクを編集'}
         </h2>
         <form className="modal__form" onSubmit={handleSubmit}>
           <div className="modal__field">
@@ -91,13 +98,42 @@ const TaskModal = ({ isOpen, mode, task, onClose, onSave, onDelete }) => {
               value={timeLabel}
               onChange={(e) => setTimeLabel(e.target.value)}
             >
-              <option value="today">📅 今日</option>
-              <option value="tomorrow">📆 明日</option>
-              <option value="thisweek">🗓️ 今週</option>
-              <option value="nextweek">📋 来週以降</option>
-              <option value="none">⏳ 期限なし</option>
+              <option value="today">今日</option>
+              <option value="tomorrow">明日</option>
+              <option value="thisweek">今週</option>
+              <option value="nextweek">来週以降</option>
+              <option value="none">期限なし</option>
             </select>
           </div>
+
+          {mode === 'edit' && (
+            <div className="modal__field">
+              <label className="modal__label" htmlFor="task-status">ステータス</label>
+              <div className="modal__status-group" id="task-status">
+                <button
+                  type="button"
+                  className={`modal__status-btn modal__status-btn--todo ${status === 'todo' ? 'modal__status-btn--active' : ''}`}
+                  onClick={() => setStatus('todo')}
+                >
+                  未着手
+                </button>
+                <button
+                  type="button"
+                  className={`modal__status-btn modal__status-btn--inprogress ${status === 'inprogress' ? 'modal__status-btn--active' : ''}`}
+                  onClick={() => setStatus('inprogress')}
+                >
+                  進行中
+                </button>
+                <button
+                  type="button"
+                  className={`modal__status-btn modal__status-btn--done ${status === 'done' ? 'modal__status-btn--active' : ''}`}
+                  onClick={() => setStatus('done')}
+                >
+                  完了
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="modal__actions">
             <button type="button" className="modal__btn modal__btn--cancel" onClick={onClose}>

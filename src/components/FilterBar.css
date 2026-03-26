@@ -1,8 +1,9 @@
 .filter-bar {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: var(--space-sm);
-  padding: var(--space-md) var(--space-xl);
+  padding: var(--space-xl) var(--space-xl) var(--space-md) var(--space-xl);
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -44,7 +45,7 @@
 
 @media (max-width: 600px) {
   .filter-bar {
-    padding: var(--space-sm) var(--space-md);
+    padding: var(--space-lg) var(--space-md) var(--space-sm) var(--space-md);
     gap: 6px;
   }
 

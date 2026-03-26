@@ -1,5 +1,6 @@
 .kanban-board {
   display: flex;
+  justify-content: center;
   gap: var(--space-md);
   padding: var(--space-md) var(--space-xl);
   flex: 1;
@@ -10,12 +11,12 @@
   position: fixed;
   bottom: var(--space-xl);
   right: var(--space-xl);
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
   background: var(--accent-gradient);
   color: #fff;
-  font-size: 1.75rem;
+  font-size: 2.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -43,8 +44,8 @@
   .kanban-board__add-btn {
     bottom: var(--space-md);
     right: var(--space-md);
-    width: 56px;
-    height: 56px;
-    font-size: 1.5rem;
+    width: 64px;
+    height: 64px;
+    font-size: 1.8rem;
   }
 }
