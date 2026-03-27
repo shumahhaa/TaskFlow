@@ -3,13 +3,13 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChang
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAuZ7vaH8dmnk37N1uldOvburVyOjr7L-o",
-  authDomain: "taskflow-aa1a6.firebaseapp.com",
-  projectId: "taskflow-aa1a6",
-  storageBucket: "taskflow-aa1a6.firebasestorage.app",
-  messagingSenderId: "939756137027",
-  appId: "1:939756137027:web:eae06071465a92f5b702f6",
-  measurementId: "G-ZVJ8WCSTKM"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase
