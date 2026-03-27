@@ -58,6 +58,7 @@ export function useTaskManager(user) {
     const newTask = {
       title: taskData.title,
       priority: taskData.priority,
+      timeLabel: taskData.timeLabel,
       status: 'todo',
       order: Date.now(), // temporary order to be last
       createdAt: Date.now(),

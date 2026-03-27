@@ -2,6 +2,12 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import './TaskCard.css';
 
+const TIME_LABEL_MAP = {
+  morning: '午前',
+  afternoon: '午後',
+  night: '夜',
+  none: '未定',
+};
 
 const PRIORITY_LABEL_MAP = {
   high: '高',
@@ -53,6 +59,9 @@ const TaskCard = ({ task, onEdit, onStatusChange }) => {
         <div className="task-card__meta">
           <span className={`badge badge--${task.priority}`}>
             {PRIORITY_LABEL_MAP[task.priority]}
+          </span>
+          <span className={`task-card__time-tag task-card__time-tag--${task.timeLabel}`}>
+            {TIME_LABEL_MAP[task.timeLabel]}
           </span>
         </div>
         
