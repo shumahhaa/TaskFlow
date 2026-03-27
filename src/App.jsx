@@ -1,6 +1,5 @@
 import { useTaskManager } from './hooks/useTaskManager';
 import Header from './components/Header';
-import FilterBar from './components/FilterBar';
 import KanbanBoard from './components/KanbanBoard';
 import TaskModal from './components/TaskModal';
 
@@ -10,8 +9,6 @@ import { auth, googleProvider, signInWithPopup, onAuthStateChanged } from './uti
 function MainApp({ user }) {
   const {
     tasks,
-    filter,
-    setFilter,
     modalState,
     addTask,
     updateTask,
@@ -41,7 +38,6 @@ function MainApp({ user }) {
     <>
       <Header user={user} />
 
-      <FilterBar filter={filter} setFilter={setFilter} />
       <KanbanBoard
         tasks={tasks}
         getFilteredTasks={getFilteredTasks}

@@ -27,7 +27,6 @@ function findColumn(taskId, tasks) {
 export function useTaskManager(user) {
   const [tasks, setTasks] = useState([]);
   const serverTasksRef = useRef([]);
-  const [filter, setFilter] = useState('all');
   const [modalState, setModalState] = useState({ isOpen: false, mode: 'create', task: null });
   const [isReady, setIsReady] = useState(false);
 
@@ -59,7 +58,6 @@ export function useTaskManager(user) {
     const newTask = {
       title: taskData.title,
       priority: taskData.priority,
-      timeLabel: taskData.timeLabel,
       status: 'todo',
       order: Date.now(), // temporary order to be last
       createdAt: Date.now(),
@@ -102,6 +100,31 @@ export function useTaskManager(user) {
       console.error("Error deleting document:", error);
     }
   }, [user]);
+
+  // --- Auto-delete done tasks older than 24 hours ---
+  useEffect(() => {
+    if (!user || !isReady) return;
+
+    const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+    
+    const checkAndDeleteExpiredTasks = () => {
+      const now = Date.now();
+      const expiredTasks = serverTasksRef.current.filter(t => 
+        t.status === 'done' && 
+        t.completedAt && 
+        (now - t.completedAt >= TWENTY_FOUR_HOURS)
+      );
+
+      expiredTasks.forEach(task => {
+        deleteTask(task.id);
+      });
+    };
+
+    checkAndDeleteExpiredTasks();
+    const intervalId = setInterval(checkAndDeleteExpiredTasks, 60000); // 1分ごとにチェック
+
+    return () => clearInterval(intervalId);
+  }, [user, isReady, deleteTask]);
 
   // --- D&D: onDragOver (cross-column real-time move) ---
   const handleDragOver = useCallback((event) => {
@@ -253,13 +276,9 @@ export function useTaskManager(user) {
   // --- Filtering ---
   const getFilteredTasks = useCallback((status) => {
     return tasks
-      .filter(t => {
-        if (t.status !== status) return false;
-        if (filter === 'all') return true;
-        return t.timeLabel === filter;
-      })
+      .filter(t => t.status === status)
       .sort((a, b) => a.order - b.order);
-  }, [tasks, filter]);
+  }, [tasks]);
 
   // --- Modal helpers ---
   const openCreateModal = useCallback(() => {
@@ -276,17 +295,11 @@ export function useTaskManager(user) {
 
   // --- Task counts ---
   const getTaskCount = useCallback((status) => {
-    return tasks.filter(t => {
-      if (t.status !== status) return false;
-      if (filter === 'all') return true;
-      return t.timeLabel === filter;
-    }).length;
-  }, [tasks, filter]);
+    return tasks.filter(t => t.status === status).length;
+  }, [tasks]);
 
   return {
     tasks,
-    filter,
-    setFilter,
     modalState,
     addTask,
     updateTask,

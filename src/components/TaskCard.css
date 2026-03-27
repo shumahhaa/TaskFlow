@@ -70,10 +70,10 @@
   border-radius: var(--radius-full);
 }
 
-.task-card__time-tag--today { background: var(--time-today-bg); }
-.task-card__time-tag--tomorrow { background: var(--time-tomorrow-bg); }
-.task-card__time-tag--thisweek { background: var(--time-thisweek-bg); }
-.task-card__time-tag--nextweek { background: var(--time-nextweek-bg); }
+.task-card__time-tag--morning { background: var(--time-morning-bg); }
+.task-card__time-tag--afternoon { background: var(--time-afternoon-bg); }
+.task-card__time-tag--night { background: var(--time-night-bg); }
+.task-card__time-tag--none { background: var(--time-none-bg); }
 
 /* Quick Actions */
 .task-card__quick-actions {
@@ -81,14 +81,7 @@
   flex-direction: row;
   align-items: center;
   gap: 6px;
-  opacity: 0;
-  transform: translateX(4px);
   transition: all var(--transition-normal);
-}
-
-.task-card:hover .task-card__quick-actions {
-  opacity: 1;
-  transform: translateX(0);
 }
 
 .task-card__action-btn {
@@ -112,11 +105,6 @@
   .task-card {
     touch-action: auto !important;
     cursor: default;
-  }
-  
-  .task-card__quick-actions {
-    opacity: 1;
-    transform: none;
   }
 }
 

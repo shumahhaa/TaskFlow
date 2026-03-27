@@ -45,14 +45,12 @@
   --accent-danger-hover: #ff6b84;
 
   /* Time Label Colors */
-  --time-today: #ff4d6a;
-  --time-today-bg: rgba(255, 77, 106, 0.15);
-  --time-tomorrow: #ffb84d;
-  --time-tomorrow-bg: rgba(255, 184, 77, 0.15);
-  --time-thisweek: #4dc9f6;
-  --time-thisweek-bg: rgba(77, 201, 246, 0.15);
-  --time-nextweek: #7c7cf0;
-  --time-nextweek-bg: rgba(124, 124, 240, 0.15);
+  --time-morning: #ffb84d;
+  --time-morning-bg: rgba(255, 184, 77, 0.15);
+  --time-afternoon: #4dc9f6;
+  --time-afternoon-bg: rgba(77, 201, 246, 0.15);
+  --time-night: #7c7cf0;
+  --time-night-bg: rgba(124, 124, 240, 0.15);
   --time-none: #6a6a82;
   --time-none-bg: rgba(106, 106, 130, 0.15);
 

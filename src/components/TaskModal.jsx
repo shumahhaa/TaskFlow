@@ -4,19 +4,16 @@ import './TaskModal.css';
 const TaskModal = ({ isOpen, mode, task, onClose, onSave, onDelete }) => {
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState('medium');
-  const [timeLabel, setTimeLabel] = useState('today');
   const [status, setStatus] = useState('todo');
 
   useEffect(() => {
     if (mode === 'edit' && task) {
       setTitle(task.title);
       setPriority(task.priority);
-      setTimeLabel(task.timeLabel);
       setStatus(task.status || 'todo');
     } else {
       setTitle('');
       setPriority('medium');
-      setTimeLabel('today');
       setStatus('todo');
     }
   }, [mode, task, isOpen]);
@@ -30,7 +27,6 @@ const TaskModal = ({ isOpen, mode, task, onClose, onSave, onDelete }) => {
     const saveData = {
       title: title.trim(),
       priority,
-      timeLabel,
     };
     if (mode === 'edit') {
       saveData.status = status;
@@ -90,21 +86,6 @@ const TaskModal = ({ isOpen, mode, task, onClose, onSave, onDelete }) => {
             </select>
           </div>
 
-          <div className="modal__field">
-            <label className="modal__label" htmlFor="task-time-label">時間ラベル</label>
-            <select
-              id="task-time-label"
-              className="modal__select"
-              value={timeLabel}
-              onChange={(e) => setTimeLabel(e.target.value)}
-            >
-              <option value="today">今日</option>
-              <option value="tomorrow">明日</option>
-              <option value="thisweek">今週</option>
-              <option value="nextweek">来週以降</option>
-              <option value="none">期限なし</option>
-            </select>
-          </div>
 
           {mode === 'edit' && (
             <div className="modal__field">
