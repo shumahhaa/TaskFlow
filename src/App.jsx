@@ -92,7 +92,7 @@ function App() {
   if (!user) {
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', backgroundColor: 'var(--bg-primary)', padding: '20px' }}>
-        <h1 style={{ fontSize: '3rem', color: 'var(--text-primary)', margin: '0 0 16px 0', letterSpacing: '-1px' }}>TaskFlow</h1>
+        <h1 style={{ fontSize: '3rem', color: 'var(--text-primary)', margin: '0 0 16px 0', letterSpacing: '-1px' }}>KyouYaru</h1>
         <p style={{ color: 'var(--text-secondary)', fontSize: '1.1rem', marginBottom: '40px', textAlign: 'center', lineHeight: '1.6' }}>
           クラウド保存に対応しました。<br />
           Googleアカウントでログインして、スマホとPCでタスクを安全に同期しましょう。

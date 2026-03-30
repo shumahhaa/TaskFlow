@@ -13,7 +13,7 @@ const Header = ({ user }) => {
   return (
     <header className="header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-        <h1 className="header__title" style={{ margin: 0 }}>TaskFlow</h1>
+        <h1 className="header__title" style={{ margin: 0 }}>KyouYaru</h1>
       </div>
 
       {user && (
