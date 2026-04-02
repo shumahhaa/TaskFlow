@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import TaskCard from './TaskCard';
@@ -9,10 +10,22 @@ const COLUMN_CONFIG = {
   done: { label: '完了', description: '24時間後に消去' },
 };
 
+const MOBILE_BREAKPOINT = 768;
+
 const Column = ({ status, tasks, onEditTask, taskCount, onStatusChange }) => {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   const config = COLUMN_CONFIG[status];
   const taskIds = tasks.map(t => t.id);
+
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < MOBILE_BREAKPOINT);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const emptyMessage = isMobile ? 'タスクがありません' : 'タスクをここにドロップ';
 
   return (
     <div
@@ -25,12 +38,12 @@ const Column = ({ status, tasks, onEditTask, taskCount, onStatusChange }) => {
           <span>{config.label}</span>
           {config.description && <span className="column__description">{config.description}</span>}
         </div>
-        <span className="column__count">{taskCount}</span>
+
       </div>
       <SortableContext items={taskIds} strategy={verticalListSortingStrategy}>
         <div ref={setNodeRef} className="column__tasks">
           {tasks.length === 0 ? (
-            <div className="column__empty">タスクをここにドロップ</div>
+            <div className="column__empty">{emptyMessage}</div>
           ) : (
             tasks.map(task => (
               <TaskCard key={task.id} task={task} onEdit={onEditTask} onStatusChange={onStatusChange} />

@@ -25,12 +25,12 @@
   --border-active: rgba(150, 120, 220, 0.5);
 
   /* Priority Colors */
-  --priority-high: #ff5a7e;
-  --priority-high-bg: rgba(255, 90, 126, 0.12);
-  --priority-medium: #ff9a3c;
-  --priority-medium-bg: rgba(255, 154, 60, 0.12);
-  --priority-low: #22c97a;
-  --priority-low-bg: rgba(34, 201, 122, 0.12);
+  --priority-high: #e8104a;
+  --priority-high-bg: rgba(232, 16, 74, 0.15);
+  --priority-medium: #f07000;
+  --priority-medium-bg: rgba(240, 112, 0, 0.14);
+  --priority-low: #0aa86a;
+  --priority-low-bg: rgba(10, 168, 106, 0.14);
 
   /* Status Colors */
   --status-todo: #a78bfa;
@@ -45,14 +45,14 @@
   --accent-danger-hover: #e8365c;
 
   /* Time Label Colors */
-  --time-morning: #ff9a3c;
-  --time-morning-bg: rgba(255, 154, 60, 0.14);
-  --time-afternoon: #38bdf8;
-  --time-afternoon-bg: rgba(56, 189, 248, 0.14);
-  --time-night: #a78bfa;
-  --time-night-bg: rgba(167, 139, 250, 0.14);
-  --time-none: #a89fc8;
-  --time-none-bg: rgba(168, 159, 200, 0.14);
+  --time-morning: #c95f00;
+  --time-morning-bg: rgba(255, 140, 0, 0.18);
+  --time-afternoon: #0077c2;
+  --time-afternoon-bg: rgba(0, 140, 220, 0.15);
+  --time-night: #5b21b6;
+  --time-night-bg: rgba(139, 92, 246, 0.18);
+  --time-none: #6b5fa0;
+  --time-none-bg: rgba(150, 130, 200, 0.15);
 
   /* Shadows */
   --shadow-sm: 0 2px 8px rgba(100, 80, 180, 0.08);
