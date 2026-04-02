@@ -78,7 +78,7 @@ const TaskCard = ({ task, onEdit, onStatusChange }) => {
                 aria-label={`${STATUS_LABEL[targetStatus]}へ移動`}
                 title={`${STATUS_LABEL[targetStatus]}へ移動`}
               >
-                {STATUS_LABEL[targetStatus]}へ
+                {targetStatus === 'inprogress' ? '▶' : targetStatus === 'done' ? '✓' : '↩'}
               </button>
             ))}
           </div>

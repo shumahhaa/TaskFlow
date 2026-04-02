@@ -78,72 +78,75 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   transition: all var(--transition-normal);
 }
 
 .task-card__action-btn {
-  padding: 4px 10px;
+  width: 26px;
+  height: 26px;
   border-radius: var(--radius-full);
-  background: #f5f2ff;
-  border: 1.5px solid rgba(139, 92, 246, 0.2);
-  color: var(--accent-primary);
+  background: transparent;
+  border: 1.5px solid rgba(139, 92, 246, 0.25);
+  color: rgba(139, 92, 246, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.72rem;
-  font-weight: 700;
+  font-size: 0.7rem;
   cursor: pointer;
   transition: all var(--transition-fast);
-  white-space: nowrap;
+  padding: 0;
+  flex-shrink: 0;
 }
 
 .task-card__action-btn:hover {
-  background: var(--accent-primary);
-  color: #ffffff;
-  border-color: transparent;
-  box-shadow: 0 3px 10px rgba(139, 92, 246, 0.3);
+  background: rgba(139, 92, 246, 0.1);
+  border-color: var(--accent-primary);
+  color: var(--accent-primary);
+  transform: scale(1.12);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.2);
 }
 
-/* 「進行中へ」ボタン — 紫グラデーション塗りつぶし */
+/* 「進行中へ」ボタン — ゴースト（紫） */
 .task-card__action-btn--to-inprogress {
-  background: linear-gradient(135deg, #8b5cf6, #7c3aed);
-  border-color: transparent;
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35);
+  border-color: rgba(139, 92, 246, 0.3);
+  color: rgba(139, 92, 246, 0.55);
 }
 
 .task-card__action-btn--to-inprogress:hover {
-  background: linear-gradient(135deg, #7c3aed, #6d28d9);
-  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.5);
-  transform: translateY(-1px);
+  background: rgba(139, 92, 246, 0.1);
+  border-color: #8b5cf6;
+  color: #8b5cf6;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.25);
+  transform: scale(1.12);
 }
 
-/* 「完了へ」ボタン — 緑グラデーション塗りつぶし（達成感） */
+/* 「完了へ」ボタン — ゴースト（緑） */
 .task-card__action-btn--to-done {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  border-color: transparent;
-  color: #ffffff;
-  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.35);
+  border-color: rgba(34, 197, 94, 0.3);
+  color: rgba(34, 197, 94, 0.6);
 }
 
 .task-card__action-btn--to-done:hover {
-  background: linear-gradient(135deg, #16a34a, #15803d);
-  box-shadow: 0 4px 14px rgba(34, 197, 94, 0.5);
-  transform: translateY(-1px);
+  background: rgba(34, 197, 94, 0.1);
+  border-color: #22c55e;
+  color: #16a34a;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.25);
+  transform: scale(1.12);
 }
 
-/* 「未着手へ」ボタン — 控えめなゴーストボタン */
+/* 「未着手へ」ボタン — 控えめなゴースト */
 .task-card__action-btn--to-todo {
-  background: transparent;
-  border: 1.5px solid rgba(139, 92, 246, 0.3);
-  color: var(--accent-primary);
+  border-color: rgba(156, 163, 175, 0.35);
+  color: rgba(107, 114, 128, 0.6);
 }
 
 .task-card__action-btn--to-todo:hover {
-  background: rgba(139, 92, 246, 0.08);
-  border-color: var(--accent-primary);
+  background: rgba(107, 114, 128, 0.08);
+  border-color: #9ca3af;
+  color: #6b7280;
   box-shadow: none;
+  transform: scale(1.12);
 }
 
 @media (max-width: 900px) {
@@ -163,7 +166,8 @@
   }
   
   .task-card__action-btn {
-    padding: 6px 12px;
-    font-size: 0.78rem;
+    width: 28px;
+    height: 28px;
+    font-size: 0.72rem;
   }
 }
