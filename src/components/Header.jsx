@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { auth, signOut } from '../utils/firebase';
+import logo from '../assets/logo.png';
 import './Header.css';
 
 const Header = ({ user }) => {
@@ -37,7 +38,7 @@ const Header = ({ user }) => {
     <header className="header">
       <div className="header__logo-wrapper">
         <img 
-          src="/src/assets/logo.png" 
+          src={logo} 
           alt="今日やる！" 
           className="header__logo"
         />
