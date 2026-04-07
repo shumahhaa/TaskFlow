@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { auth, signOut } from '../utils/firebase';
-import logo from '../assets/logo.png';
+import { CheckSquare } from 'lucide-react';
 import './Header.css';
 
 const Header = ({ user }) => {
@@ -37,11 +37,8 @@ const Header = ({ user }) => {
   return (
     <header className="header">
       <div className="header__logo-wrapper">
-        <img 
-          src={logo} 
-          alt="今日やる！" 
-          className="header__logo"
-        />
+        <CheckSquare className="header__logo-icon" size={28} />
+        <span className="header__logo-text">Today's Your Task</span>
       </div>
 
       {user && (

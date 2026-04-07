@@ -47,26 +47,23 @@
   color: var(--text-muted);
 }
 
-.column__status-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
+.column__status-icon {
   flex-shrink: 0;
 }
 
-.column__status-dot--todo {
-  background: var(--status-todo);
-  box-shadow: 0 0 8px rgba(167, 139, 250, 0.6);
+.column__status-icon--todo {
+  color: var(--status-todo);
+  filter: drop-shadow(0 0 6px rgba(107, 114, 128, 0.4));
 }
 
-.column__status-dot--inprogress {
-  background: var(--status-inprogress);
-  box-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+.column__status-icon--inprogress {
+  color: var(--status-inprogress);
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.4));
 }
 
-.column__status-dot--done {
-  background: var(--status-done);
-  box-shadow: 0 0 8px rgba(52, 211, 153, 0.6);
+.column__status-icon--done {
+  color: var(--status-done);
+  filter: drop-shadow(0 0 6px rgba(52, 211, 153, 0.4));
 }
 
 .column__count {

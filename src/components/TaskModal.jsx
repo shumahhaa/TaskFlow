@@ -5,19 +5,19 @@ const TaskModal = ({ isOpen, mode, task, onClose, onSave, onDelete }) => {
   const [title, setTitle] = useState('');
   const [priority, setPriority] = useState('medium');
   const [timeLabel, setTimeLabel] = useState('morning');
-  const [status, setStatus] = useState('todo');
+  const [duration, setDuration] = useState('');
 
   useEffect(() => {
     if (mode === 'edit' && task) {
       setTitle(task.title);
       setPriority(task.priority);
       setTimeLabel(task.timeLabel);
-      setStatus(task.status || 'todo');
+      setDuration(task.duration != null ? String(task.duration) : '');
     } else {
       setTitle('');
       setPriority('medium');
       setTimeLabel('morning');
-      setStatus('todo');
+      setDuration('');
     }
   }, [mode, task, isOpen]);
 
@@ -27,14 +27,13 @@ const TaskModal = ({ isOpen, mode, task, onClose, onSave, onDelete }) => {
     e.preventDefault();
     if (!title.trim()) return;
 
+    const parsedDuration = duration !== '' ? parseInt(duration, 10) : null;
     const saveData = {
       title: title.trim(),
       priority,
       timeLabel,
+      duration: parsedDuration !== null && !isNaN(parsedDuration) ? parsedDuration : null,
     };
-    if (mode === 'edit') {
-      saveData.status = status;
-    }
     onSave(saveData);
     onClose();
   };
@@ -84,9 +83,9 @@ const TaskModal = ({ isOpen, mode, task, onClose, onSave, onDelete }) => {
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
             >
-              <option value="high">🔴 高</option>
-              <option value="medium">🟡 中</option>
-              <option value="low">🟢 低</option>
+              <option value="high">A</option>
+              <option value="medium">B</option>
+              <option value="low">C</option>
             </select>
           </div>
 
@@ -105,34 +104,22 @@ const TaskModal = ({ isOpen, mode, task, onClose, onSave, onDelete }) => {
             </select>
           </div>
 
-          {mode === 'edit' && (
-            <div className="modal__field">
-              <label className="modal__label" htmlFor="task-status">ステータス</label>
-              <div className="modal__status-group" id="task-status">
-                <button
-                  type="button"
-                  className={`modal__status-btn modal__status-btn--todo ${status === 'todo' ? 'modal__status-btn--active' : ''}`}
-                  onClick={() => setStatus('todo')}
-                >
-                  未着手
-                </button>
-                <button
-                  type="button"
-                  className={`modal__status-btn modal__status-btn--inprogress ${status === 'inprogress' ? 'modal__status-btn--active' : ''}`}
-                  onClick={() => setStatus('inprogress')}
-                >
-                  進行中
-                </button>
-                <button
-                  type="button"
-                  className={`modal__status-btn modal__status-btn--done ${status === 'done' ? 'modal__status-btn--active' : ''}`}
-                  onClick={() => setStatus('done')}
-                >
-                  完了
-                </button>
-              </div>
+          <div className="modal__field">
+            <label className="modal__label" htmlFor="task-duration">所要時間（分）</label>
+            <div className="modal__duration-wrapper">
+              <input
+                id="task-duration"
+                className="modal__input modal__input--duration"
+                type="number"
+                min="1"
+                max="999"
+                value={duration}
+                onChange={(e) => setDuration(e.target.value)}
+                placeholder="例: 30"
+              />
+              <span className="modal__duration-unit">分</span>
             </div>
-          )}
+          </div>
 
           <div className="modal__actions">
             <button type="button" className="modal__btn modal__btn--cancel" onClick={onClose}>

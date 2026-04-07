@@ -103,6 +103,31 @@
   color: var(--text-primary);
 }
 
+/* Duration field */
+.modal__duration-wrapper {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.modal__input--duration {
+  width: 110px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+/* Chrome/Safari: hide spin buttons */
+.modal__input--duration::-webkit-inner-spin-button,
+.modal__input--duration::-webkit-outer-spin-button {
+  opacity: 0.4;
+}
+
+.modal__duration-unit {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
 .modal__actions {
   display: flex;
   gap: var(--space-sm);

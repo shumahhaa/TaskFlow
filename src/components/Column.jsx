@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CircleDashed, Rocket, CheckCircle2 } from 'lucide-react';
 import TaskCard from './TaskCard';
 import './Column.css';
-
 const COLUMN_CONFIG = {
-  todo: { label: '未着手' },
-  inprogress: { label: '進行中' },
-  done: { label: '完了', description: '24時間後に消去' },
+  todo: { label: '未着手', Icon: CircleDashed },
+  inprogress: { label: '進行中', Icon: Rocket },
+  done: { label: '完了', description: '12時間後に消去', Icon: CheckCircle2 },
 };
 
 const MOBILE_BREAKPOINT = 768;
@@ -34,7 +34,7 @@ const Column = ({ status, tasks, onEditTask, taskCount, onStatusChange }) => {
     >
       <div className="column__header">
         <div className="column__title">
-          <span className={`column__status-dot column__status-dot--${status}`} />
+          <config.Icon className={`column__status-icon column__status-icon--${status}`} size={18} strokeWidth={2.5} />
           <span>{config.label}</span>
           {config.description && <span className="column__description">{config.description}</span>}
         </div>

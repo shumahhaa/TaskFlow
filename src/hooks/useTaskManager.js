@@ -102,18 +102,18 @@ export function useTaskManager(user) {
     }
   }, [user]);
 
-  // --- Auto-delete done tasks older than 24 hours ---
+  // --- Auto-delete done tasks older than 12 hours ---
   useEffect(() => {
     if (!user || !isReady) return;
 
-    const TWENTY_FOUR_HOURS = 24 * 60 * 60 * 1000;
+    const TWELVE_HOURS = 12 * 60 * 60 * 1000;
     
     const checkAndDeleteExpiredTasks = () => {
       const now = Date.now();
       const expiredTasks = serverTasksRef.current.filter(t => 
         t.status === 'done' && 
         t.completedAt && 
-        (now - t.completedAt >= TWENTY_FOUR_HOURS)
+        (now - t.completedAt >= TWELVE_HOURS)
       );
 
       expiredTasks.forEach(task => {
