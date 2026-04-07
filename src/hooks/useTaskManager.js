@@ -59,6 +59,7 @@ export function useTaskManager(user) {
       title: taskData.title,
       priority: taskData.priority,
       timeLabel: taskData.timeLabel,
+      duration: taskData.duration ?? null,
       status: 'todo',
       order: Date.now(), // temporary order to be last
       createdAt: Date.now(),
